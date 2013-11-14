@@ -1,12 +1,6 @@
-Verbal RegEx
-============
-Just a small mental exercise.
-
-Example:
-------
-
-```php
 <?php
+
+require_once 'vendor/autoload.php';
 
 use Rb\VerbalRegex\Statement;
 
@@ -16,8 +10,7 @@ $statement->find('http')
     ->then('://')
     ->maybe('www.')
     ->anythingBut(' ', 'domain'); // second argument is the (optional) name for the match
-    
+
 $matches = $statement->match('http://www.google.com');
 
 echo $matches['domain']; // echoes 'google.com'
-```
