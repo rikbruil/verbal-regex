@@ -50,6 +50,7 @@ class Statement
     }
 
     /**
+     * Alternative syntax for the Statement::find() method
      * @see find
      */
     public function then($statement = '', $name = null)
@@ -58,6 +59,7 @@ class Statement
     }
 
     /**
+     * Find and capture the given literal string
      * @param string $statement
      * @param string|null $name
      * @return $this
@@ -69,38 +71,18 @@ class Statement
     }
 
     /**
-     * @param string $statement
-     * @return string
-     */
-    private static function sanitize($statement)
-    {
-        return preg_quote($statement, self::$delimiter);
-    }
-
-    /**
-     * @param string $statement
-     * @param null $name
-     * @return $this
-     */
-    private function capture($statement = '', $name = null)
-    {
-        $prefix = (empty($name)) ? '' : '?P<' . $name . '>';
-        return $this->add('(' . $prefix . $statement . ')');
-    }
-
-    /**
+     * Search a literal string without capturing.
      * @param string $statement
      * @return $this
      */
-    public function add($statement = '')
+    public function search($statement = '')
     {
-        if ($statement) {
-            $this->buffer .= $statement;
-        }
-        return $this;
+        $statement = self::sanitize($statement);
+        return $this->add($statement);
     }
 
     /**
+     * Capture anything (with optional name)
      * @param string|null $name
      * @return $this
      */
@@ -110,6 +92,7 @@ class Statement
     }
 
     /**
+     * Capture anything but given characters (with optional name)
      * @param string $statement
      * @param string|null $name
      * @return $this
@@ -118,24 +101,6 @@ class Statement
     {
         $statement = self::sanitize($statement);
         return $this->capture(self::charactersNotIn($statement) . '*', $name);
-    }
-
-    /**
-     * @param string $statement
-     * @return string
-     */
-    public static function charactersNotIn($statement = '')
-    {
-        return self::charactersIn('^' . $statement);
-    }
-
-    /**
-     * @param string $statement
-     * @return string
-     */
-    public static function charactersIn($statement = '')
-    {
-        return '[' . $statement . ']';
     }
 
     /**
@@ -170,6 +135,24 @@ class Statement
     }
 
     /**
+     * Todo: test this
+     * @return $this
+     */
+    public function decimal()
+    {
+        return $this->add('\d+');
+    }
+
+    /**
+     * Todo: test this
+     * @return $this
+     */
+    public function hex()
+    {
+        return $this->add(self::charactersIn(':xdigit:'));
+    }
+
+    /**
      * @param string $from
      * @param string|null $to
      * @return $this
@@ -181,6 +164,7 @@ class Statement
     }
 
     /**
+     * Set the number of times the preceding statement should match
      * @param int $number
      * @return $this
      */
@@ -190,17 +174,33 @@ class Statement
     }
 
     /**
-     * @param string $statement
+     * Set the minimum and maximum amount of times the
+     * preceding statement should match
+     * @param int $from
+     * @param int $to
      * @return $this
      */
-    public function maybe($statement = '')
+    public function between($from, $to)
     {
-        return $this->find($statement)->add('?');
+        $from = min((int) $from, (int) $to);
+        $to = max((int) $from, (int) $to);
+        return $this->times($from . ',' . $to);
     }
 
     /**
+     * Try to match the given statement (with optional name)
      * @param string $statement
+     * @param string|null $name
      * @return $this
+     */
+    public function maybe($statement = '', $name = null)
+    {
+        return $this->find($statement, $name)->add('?');
+    }
+
+    /**
+     * Alternative syntax for Statement::anyOf()
+     * @see anyOf
      */
     public function any($statement = '')
     {
@@ -208,6 +208,7 @@ class Statement
     }
 
     /**
+     * Find but don't capture any of the given characters
      * @param string $statement
      * @return $this
      */
@@ -252,6 +253,7 @@ class Statement
     }
 
     /**
+     * Test the current statement against the given subject and return the matches found
      * @param string $subject
      * @param null &$result The result of preg_match (0 = no match, 1 = match, false = error)
      * @return array Array containing the matches, or empty array
@@ -264,6 +266,7 @@ class Statement
     }
 
     /**
+     * Return the RegEx statement as string
      * @return string
      */
     public function compile()
@@ -277,5 +280,63 @@ class Statement
     public function __toString()
     {
         return $this->compile();
+    }
+
+    /**
+     * Escape characters with special meaning in RegEx
+     * @param string $statement
+     * @return string
+     */
+    private static function sanitize($statement)
+    {
+        return preg_quote($statement, self::$delimiter);
+    }
+
+    /**
+     * Create a character class which should not include given characters
+     * @param string $statement
+     * @return string
+     */
+    protected final static function charactersNotIn($statement = '')
+    {
+        return self::charactersIn('^' . $statement);
+    }
+
+    /**
+     * Create a character class which should include given characters
+     * @param string $statement
+     * @return string
+     */
+    protected final static function charactersIn($statement = '')
+    {
+        return '[' . $statement . ']';
+    }
+
+    /**
+     * Add a (optionally named) capture group.
+     * This method does not do any sanitizing of input.
+     * Internal use only
+     * @param string $statement
+     * @param null $name
+     * @return $this
+     */
+    protected final function capture($statement = '', $name = null)
+    {
+        $prefix = (empty($name)) ? '' : '?P<' . $name . '>';
+        return $this->add('(' . $prefix . $statement . ')');
+    }
+
+    /**
+     * Add the given statement to the buffer
+     * Internal use only
+     * @param string $statement
+     * @return $this
+     */
+    protected final function add($statement = '')
+    {
+        if ($statement) {
+            $this->buffer .= $statement;
+        }
+        return $this;
     }
 }

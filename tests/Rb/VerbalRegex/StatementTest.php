@@ -18,7 +18,7 @@ class StatementTest extends PHPUnit_Framework_TestCase
     {
         $statement = $this->statement;
         $statement->startsWith()
-                ->add('test')
+                ->search('test')
                 ->endsWith();
 
         $expected = '/^test$/';
