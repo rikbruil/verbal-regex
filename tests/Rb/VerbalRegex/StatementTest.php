@@ -87,7 +87,7 @@ class StatementTest extends PHPUnit_Framework_TestCase
         $statement = $this->statement;
         $statement->range(1, 9)
             ->times(4)
-            ->maybe(' ')
+            ->search(' ')->between(0, 1) // same as maybe(' ')
             ->range('A', 'Z')
             ->times(2);
 

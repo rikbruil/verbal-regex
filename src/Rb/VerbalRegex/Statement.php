@@ -53,7 +53,7 @@ class Statement
      * Alternative syntax for the Statement::find() method
      * @see find
      */
-    public function then($statement = '', $name = null)
+    public function then($statement, $name = null)
     {
         return $this->find($statement, $name);
     }
@@ -64,7 +64,7 @@ class Statement
      * @param string|null $name
      * @return $this
      */
-    public function find($statement = '', $name = null)
+    public function find($statement, $name = null)
     {
         $statement = self::sanitize($statement);
         return $this->capture($statement, $name);
@@ -75,7 +75,7 @@ class Statement
      * @param string $statement
      * @return $this
      */
-    public function search($statement = '')
+    public function search($statement)
     {
         $statement = self::sanitize($statement);
         return $this->add($statement);
@@ -97,7 +97,7 @@ class Statement
      * @param string|null $name
      * @return $this
      */
-    public function anythingBut($statement = '', $name = null)
+    public function anythingBut($statement, $name = null)
     {
         $statement = self::sanitize($statement);
         return $this->capture(self::charactersNotIn($statement) . '*', $name);
@@ -119,7 +119,7 @@ class Statement
      * @param string|null $name
      * @return $this
      */
-    public function somethingBut($statement = '', $name = null)
+    public function somethingBut($statement, $name = null)
     {
         $statement = self::sanitize($statement);
         return $this->capture(self::charactersNotIn($statement) . '+', $name);
@@ -157,7 +157,7 @@ class Statement
      * @param string|null $to
      * @return $this
      */
-    public function range($from = '', $to = null)
+    public function range($from, $to = null)
     {
         $statement = (!$to) ? $from : $from . '-' . $to;
         return $this->add(self::charactersIn($statement));
@@ -193,7 +193,7 @@ class Statement
      * @param string|null $name
      * @return $this
      */
-    public function maybe($statement = '', $name = null)
+    public function maybe($statement, $name = null)
     {
         return $this->find($statement, $name)->add('?');
     }
@@ -202,7 +202,7 @@ class Statement
      * Alternative syntax for Statement::anyOf()
      * @see anyOf
      */
-    public function any($statement = '')
+    public function any($statement)
     {
         return $this->anyOf($statement);
     }
@@ -212,7 +212,7 @@ class Statement
      * @param string $statement
      * @return $this
      */
-    public function anyOf($statement = '')
+    public function anyOf($statement)
     {
         $statement = self::sanitize($statement);
         return $this->add(self::charactersIn($statement));
@@ -222,7 +222,7 @@ class Statement
      * @param string $statement
      * @return $this
      */
-    public function startsWith($statement = '')
+    public function startsWith($statement)
     {
         return $this->startOfLine()->add($statement);
     }
@@ -239,7 +239,7 @@ class Statement
      * @param string $statement
      * @return $this
      */
-    public function endsWith($statement = '')
+    public function endsWith($statement)
     {
         return $this->add($statement)->endOfLine();
     }
@@ -269,7 +269,7 @@ class Statement
      * Return the RegEx statement as string
      * @return string
      */
-    public function compile()
+    protected function compile()
     {
         return self::$delimiter . $this->buffer . self::$delimiter;
     }
@@ -277,7 +277,7 @@ class Statement
     /**
      * @return string
      */
-    public function __toString()
+    public final function __toString()
     {
         return $this->compile();
     }
@@ -287,7 +287,7 @@ class Statement
      * @param string $statement
      * @return string
      */
-    private static function sanitize($statement)
+    protected final static function sanitize($statement)
     {
         return preg_quote($statement, self::$delimiter);
     }
@@ -297,7 +297,7 @@ class Statement
      * @param string $statement
      * @return string
      */
-    protected final static function charactersNotIn($statement = '')
+    protected final static function charactersNotIn($statement)
     {
         return self::charactersIn('^' . $statement);
     }
@@ -307,7 +307,7 @@ class Statement
      * @param string $statement
      * @return string
      */
-    protected final static function charactersIn($statement = '')
+    protected final static function charactersIn($statement)
     {
         return '[' . $statement . ']';
     }
@@ -320,7 +320,7 @@ class Statement
      * @param null $name
      * @return $this
      */
-    protected final function capture($statement = '', $name = null)
+    protected final function capture($statement, $name = null)
     {
         $prefix = (empty($name)) ? '' : '?P<' . $name . '>';
         return $this->add('(' . $prefix . $statement . ')');
@@ -332,7 +332,7 @@ class Statement
      * @param string $statement
      * @return $this
      */
-    protected final function add($statement = '')
+    protected final function add($statement)
     {
         if ($statement) {
             $this->buffer .= $statement;
