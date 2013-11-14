@@ -6,7 +6,7 @@ Before running, make sure you have [Composer](http://getcomposer.org) installed.
 
 Then:
 - Clone the repo
-- Run `composer install` (or `composer install --dev` if you want to unit-test)
+- Run `composer install` (or `composer install --no-dev` if you dont't want to run tests)
 - Run the exampe: `php example.php`
 - ????
 - Profit
