@@ -17,9 +17,9 @@ class StatementTest extends PHPUnit_Framework_TestCase
     public function testSimple()
     {
         $statement = $this->statement;
-        $statement->startsWith()
-                ->search('test')
-                ->endsWith();
+        $statement->startsWith('te')
+                ->search('st')
+                ->endsWith('');
 
         $expected = '/^test$/';
 
