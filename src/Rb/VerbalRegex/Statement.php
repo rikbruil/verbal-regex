@@ -34,6 +34,7 @@ class Statement
      * @var string
      */
     private static $delimiter;
+
     /**
      * @var string
      */

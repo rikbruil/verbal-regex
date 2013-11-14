@@ -15,7 +15,9 @@ $statement->find('http')
     ->maybe('s')
     ->then('://')
     ->maybe('www')
-    ->anythingBut(' ');
+    ->anythingBut(' ', 'domain'); // second argument is the (optional) name for the match
     
-$statement->match('http://www.google.com');
+$matches = $statement->match('http://www.google.com');
+
+echo $matches['domain']; // echoes 'google.com'
 ```
