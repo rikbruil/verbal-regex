@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rik
- * Date: 12/11/13
- * Time: 22:15
- */
 namespace Rb\VerbalRegex;
 
 /**
@@ -237,12 +231,14 @@ class Statement
 
     /**
      * @param string $subject
-     * @param array $matches
-     * @return int
+     * @param null &$result The result of preg_match (0 = no match, 1 = match, false = error)
+     * @return array Array containing the matches, or empty array
      */
-    public function match($subject, array &$matches = array())
+    public function match($subject, &$result = null)
     {
-        return preg_match($this->compile(), $subject, $matches);
+        $matches = array();
+        $result = preg_match($this->compile(), $subject, $matches);
+        return $matches;
     }
 
     /**

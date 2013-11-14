@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rik
- * Date: 12/11/13
- * Time: 23:38
- */
-
 namespace Rb\VerbalRegex;
 
 use PHPUnit_Framework_TestCase;
@@ -31,8 +24,9 @@ class StatementTest extends PHPUnit_Framework_TestCase
 
         $expected = '/^test$/';
 
+        $statement->match('test', $result);
         $this->assertEquals($expected, $statement . '');
-        $this->assertEquals(1, $statement->match('test'));
+        $this->assertEquals(1, $result);
     }
 
     public function testUrl()
@@ -44,10 +38,10 @@ class StatementTest extends PHPUnit_Framework_TestCase
             ->maybe('www')
             ->anythingBut(' ');
 
-        $this->assertEquals(0, $statement->match('http:/this.should.not.match '));
-        $this->assertEquals(1, $statement->match('http://this.should.match '));
-        $this->assertEquals(1, $statement->match('http://www.google.com'));
-        $this->assertEquals(1, $statement->match('https://tweakers.net'));
+        $this->assertEmpty($statement->match('http:/this.should.not.match '));
+        $this->assertNotEmpty($statement->match('http://this.should.match '));
+        $this->assertNotEmpty($statement->match('http://www.google.com'));
+        $this->assertNotEmpty($statement->match('https://tweakers.net'));
     }
 
     public function testCaptureGroups()
@@ -60,11 +54,11 @@ class StatementTest extends PHPUnit_Framework_TestCase
             ->any('.')
             ->anything();
 
-        $matches = array();
-        $this->assertEquals(1, $statement->match('rik.bruil@gmail.com', $matches));
+        $matches = $statement->match('ad.dress@domain.com');
 
-        $this->assertEquals('rik.bruil', $matches[1]);
-        $this->assertEquals('gmail', $matches[2]);
+        $this->assertNotEmpty($matches);
+        $this->assertEquals('ad.dress', $matches[1]);
+        $this->assertEquals('domain', $matches[2]);
         $this->assertEquals('com', $matches[3]);
     }
 
@@ -77,15 +71,15 @@ class StatementTest extends PHPUnit_Framework_TestCase
             ->any('.')
             ->anything('tld');
 
-        $matches = array();
-        $this->assertEquals(1, $statement->match('rik.bruil@gmail.com', $matches));
+        $matches = $statement->match('ad.dress@domain.com');
 
+        $this->assertNotEmpty($matches);
         $this->assertArrayHasKey('address', $matches);
         $this->assertArrayHasKey('host', $matches);
         $this->assertArrayHasKey('tld', $matches);
 
-        $this->assertEquals('rik.bruil', $matches['address']);
-        $this->assertEquals('gmail', $matches['host']);
+        $this->assertEquals('ad.dress', $matches['address']);
+        $this->assertEquals('domain', $matches['host']);
         $this->assertEquals('com', $matches['tld']);
     }
 
@@ -98,7 +92,7 @@ class StatementTest extends PHPUnit_Framework_TestCase
             ->range('A', 'Z')
             ->times(2);
 
-        $this->assertEquals(1, $statement->match('5855 AP'));
-        $this->assertEquals(1, $statement->match('5855AP'));
+        $this->assertNotEmpty($statement->match('4321 AB'));
+        $this->assertNotEmpty($statement->match('4321AB'));
     }
 }
