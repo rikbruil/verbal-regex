@@ -2,6 +2,15 @@ Verbal RegEx
 ============
 Just a small mental exercise.
 
+Before running, make sure you have [Composer](http://getcomposer.org) installed.
+
+Then:
+- Clone the repo
+- Run `composer install` (or `composer install --dev` if you want to unit-test)
+- Run the exampe: `php example.php`
+- ????
+- Profit
+
 Example:
 ------
 
