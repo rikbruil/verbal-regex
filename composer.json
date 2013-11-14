@@ -1,0 +1,22 @@
+{
+    "name": "Rb/VerbalRegex",
+    "description": "Verbal RegEx",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Rik Bruil",
+            "email": "rik.bruil@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {"": "src/"}
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "require": {
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    }
+}
