@@ -1,7 +1,6 @@
 <?php
-namespace Rb\VerbalRegex;
 
-use PHPUnit_Framework_TestCase;
+use Rb\VerbalRegex\Statement;
 
 class StatementTest extends PHPUnit_Framework_TestCase
 {

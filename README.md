@@ -1,12 +1,16 @@
-verbal-regex
+Verbal RegEx
 ============
+Just a small mental exercise.
 
-Usage:
+Example:
+------
 
 ```php
 <?php
 
-$statement = new Rb\VerbalRegex\Statement();
+use Rb\VerbalRegex\Statement;
+
+$statement = new Statement();
 $statement->find('http')
     ->maybe('s')
     ->then('://')
