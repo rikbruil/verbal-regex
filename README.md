@@ -24,7 +24,8 @@ $statement->find('http')
     ->maybe('s')
     ->then('://')
     ->maybe('www.')
-    ->anythingBut(' ', 'domain'); // second argument is the (optional) name for the match
+    ->endsWith()
+    ->anythingBut(' ', 'domain'); // 2nd argument is the (optional) name for the match
     
 $matches = $statement->match('http://www.google.com');
 

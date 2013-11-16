@@ -38,6 +38,16 @@ class Statement
     /**
      * @var string
      */
+    private $prefix = '';
+
+    /**
+     * @var string
+     */
+    private $suffix = '';
+
+    /**
+     * @var string
+     */
     private $buffer;
 
     /**
@@ -225,18 +235,21 @@ class Statement
     }
 
     /**
+     * Make sure the next specified statement will match the start of the line
+     * This resets the internal buffer if used halfway a chain.
      * @return $this
      */
     public function startOfLine()
     {
-        return $this->add('^');
+        $this->prefix = '^';
+        return $this->reset();
     }
 
     /**
-     * @param string $statement
+     * @param string|null $statement
      * @return $this
      */
-    public function endsWith($statement)
+    public function endsWith($statement = null)
     {
         return $this->add($statement)->endOfLine();
     }
@@ -246,7 +259,8 @@ class Statement
      */
     public function endOfLine()
     {
-        return $this->add('$');
+        $this->suffix = '$';
+        return $this;
     }
 
     /**
@@ -268,7 +282,18 @@ class Statement
      */
     protected function compile()
     {
-        return self::$delimiter . $this->buffer . self::$delimiter;
+        return self::$delimiter . $this->prefix . $this->buffer . $this->suffix . self::$delimiter;
+    }
+
+    /**
+     * Reset the buffer
+     * Internal use only
+     * @return $this
+     */
+    protected function reset()
+    {
+        $this->buffer = '';
+        return $this;
     }
 
     /**

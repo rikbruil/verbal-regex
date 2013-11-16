@@ -19,7 +19,7 @@ class StatementTest extends PHPUnit_Framework_TestCase
         $statement = $this->statement;
         $statement->startsWith('te')
                 ->search('st')
-                ->endsWith('');
+                ->endOfLine();
 
         $expected = '/^test$/';
 
@@ -35,10 +35,12 @@ class StatementTest extends PHPUnit_Framework_TestCase
             ->maybe('s')
             ->then('://')
             ->maybe('www')
+            ->endsWith()
             ->anythingBut(' ');
 
-        $this->assertEmpty($statement->match('http:/this.should.not.match '));
-        $this->assertNotEmpty($statement->match('http://this.should.match '));
+        $this->assertEmpty($statement->match('http:/this.should.not.match'));
+        $this->assertEmpty($statement->match('http://should.not.match '));
+        $this->assertNotEmpty($statement->match('http://this.should.match'));
         $this->assertNotEmpty($statement->match('http://www.google.com'));
         $this->assertNotEmpty($statement->match('https://tweakers.net'));
     }
