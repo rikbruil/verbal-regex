@@ -133,7 +133,7 @@ class Statement
      */
     public function words($name = null, $times = null)
     {
-        $times = ($times) ? '{' . (int) $times. '}' : '+';
+        $times = ($times) ? self::numberOfMatches($times) : '+';
         return $this->capture(self::charactersIn('\w') . $times, $name);
     }
 
@@ -167,7 +167,7 @@ class Statement
      */
     public function times($number)
     {
-        return $this->add('{' . $number . '}');
+        return $this->add(self::numberOfMatches((int) $number));
     }
 
     /**
@@ -181,7 +181,7 @@ class Statement
     {
         $from = min((int) $from, (int) $to);
         $to = max((int) $from, (int) $to);
-        return $this->times($from . ',' . $to);
+        return $this->add(self::numberOfMatches($from . ',' . $to));
     }
 
     /**
@@ -290,6 +290,17 @@ class Statement
     }
 
     /**
+     * Internal use only
+     * @param int $number
+     * @return string
+     */
+    protected static function numberOfMatches($number)
+    {
+        if (!$number) return '';
+        return '{' . $number . '}';
+    }
+
+    /**
      * Create a character class which should not include given characters
      * @param string $statement
      * @return string
@@ -331,9 +342,7 @@ class Statement
      */
     protected final function add($statement)
     {
-        if ($statement) {
-            $this->buffer .= $statement;
-        }
+        if ($statement) $this->buffer .= $statement;
         return $this;
     }
 }
