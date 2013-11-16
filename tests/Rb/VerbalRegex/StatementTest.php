@@ -94,4 +94,26 @@ class StatementTest extends PHPUnit_Framework_TestCase
         $this->assertNotEmpty($statement->match('4321 AB'));
         $this->assertNotEmpty($statement->match('4321AB'));
     }
+
+    public function testAlternativePostalCode()
+    {
+        $statement = $this->statement;
+        $statement->decimals('numbers')
+            ->maybe(' ')
+            ->words('letters');
+
+        $result = null;
+
+        $statement->match('1234CD', $result);
+        $this->assertEquals(1, $result);
+
+        $matches = $statement->match('1234 CD');
+
+        $this->assertNotEmpty($matches);
+        $this->assertArrayHasKey('numbers', $matches);
+        $this->assertArrayHasKey('letters', $matches);
+
+        $this->assertEquals('1234', $matches['numbers']);
+        $this->assertEquals('CD', $matches['letters']);
+    }
 }

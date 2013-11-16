@@ -126,30 +126,27 @@ class Statement
     }
 
     /**
-     * Todo: test this
+     * Capture any/given amount of word characters
+     * @param string|null $name Optionally specify name for the match
+     * @param int|null $times Optionally specify amount of characters to match
      * @return $this
      */
-    public function word()
+    public function words($name = null, $times = null)
     {
-        return $this->add('\w+');
+        $times = ($times) ? '{' . (int) $times. '}' : '+';
+        return $this->capture(self::charactersIn('\w') . $times, $name);
     }
 
     /**
-     * Todo: test this
+     * Capture any/given amount of word decimal
+     * @param string|null $name Optionally specify name for the match
+     * @param int|null $times Optionally specify amount of characters to match
      * @return $this
      */
-    public function decimal()
+    public function decimals($name = null, $times = null)
     {
-        return $this->add('\d+');
-    }
-
-    /**
-     * Todo: test this
-     * @return $this
-     */
-    public function hex()
-    {
-        return $this->add(self::charactersIn(':xdigit:'));
+        $times = ($times) ? '{' . (int) $times. '}' : '+';
+        return $this->capture(self::charactersIn('\d') . $times, $name);
     }
 
     /**
