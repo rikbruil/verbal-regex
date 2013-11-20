@@ -1,5 +1,7 @@
 Verbal RegEx
 ============
+[![Build Status](https://drone.io/github.com/rikbruil/verbal-regex/status.png)](https://drone.io/github.com/rikbruil/verbal-regex/latest)
+
 Just a small mental exercise.
 
 Before running, make sure you have [Composer](http://getcomposer.org) installed.
